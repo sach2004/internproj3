@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma"; // Use singleton instead of creating new instance
 import bcrypt from "bcryptjs";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
-const prisma = new PrismaClient();
 
 export const authOptions = {
   providers: [
@@ -44,7 +42,7 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user;
+        token.id = user.id; // Fixed: was token.id = user
         token.role = user.role;
       }
       return token;
