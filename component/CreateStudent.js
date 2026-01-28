@@ -32,7 +32,7 @@ export default function CreateStudent() {
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/student/create", {
+      await axios.post("/api/student/create", {
         email,
         password,
         name,
@@ -54,99 +54,147 @@ export default function CreateStudent() {
   }
 
   return (
-    <div
-      style={{ marginTop: "20px", padding: "20px", border: "1px solid #ccc" }}
-    >
-      <h2>Create Student</h2>
+    <div style={styles.container}>
+      <h2 style={styles.title}>Create Student</h2>
       <form onSubmit={onSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label>
-            Name
+        <div style={styles.row}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
+              style={styles.input}
+              placeholder="Enter student name"
             />
-          </label>
-        </div>
+          </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>
-            Roll Number
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Roll Number</label>
             <input
               type="text"
               value={rollNo}
               onChange={(e) => setRollNo(e.target.value)}
               required
-              style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
+              style={styles.input}
+              placeholder="Enter roll number"
             />
-          </label>
+          </div>
         </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>
-            Email
+        <div style={styles.row}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
+              style={styles.input}
+              placeholder="Enter email"
             />
-          </label>
-        </div>
+          </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>
-            Password
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
+              style={styles.input}
+              placeholder="Enter password"
             />
-          </label>
+          </div>
         </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>
-            Assign Teacher
-            <select
-              value={teacherId}
-              onChange={(e) => setTeacherId(e.target.value)}
-              required
-              style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
-            >
-              <option value="">Select a teacher</option>
-              {teachers.map((teacher) => (
-                <option key={teacher.id} value={teacher.id}>
-                  {teacher.name} ({teacher.email})
-                </option>
-              ))}
-            </select>
-          </label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Assign Teacher</label>
+          <select
+            value={teacherId}
+            onChange={(e) => setTeacherId(e.target.value)}
+            required
+            style={styles.select}
+          >
+            <option value="">Select a teacher</option>
+            {teachers.map((teacher) => (
+              <option key={teacher.id} value={teacher.id}>
+                {teacher.name} ({teacher.email})
+              </option>
+            ))}
+          </select>
         </div>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>{success}</p>}
+        {error && <p style={styles.error}>{error}</p>}
+        {success && <p style={styles.success}>{success}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: loading ? "#ccc" : "#28a745",
-            color: "white",
-            border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
-        >
+        <button type="submit" disabled={loading} style={styles.button}>
           {loading ? "Creating..." : "Create Student"}
         </button>
       </form>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    backgroundColor: "white",
+    padding: "25px",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+  },
+  title: {
+    margin: "0 0 20px 0",
+    fontSize: "20px",
+  },
+  row: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "15px",
+    marginBottom: "15px",
+  },
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: "15px",
+  },
+  label: {
+    marginBottom: "6px",
+    fontSize: "14px",
+    fontWeight: "500",
+  },
+  input: {
+    padding: "10px",
+    fontSize: "14px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+  },
+  select: {
+    padding: "10px",
+    fontSize: "14px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+  },
+  error: {
+    color: "#dc3545",
+    fontSize: "14px",
+    margin: "0 0 15px 0",
+  },
+  success: {
+    color: "#28a745",
+    fontSize: "14px",
+    margin: "0 0 15px 0",
+  },
+  button: {
+    width: "100%",
+    padding: "12px",
+    backgroundColor: "#28a745",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    fontSize: "15px",
+    fontWeight: "500",
+    cursor: "pointer",
+  },
+};

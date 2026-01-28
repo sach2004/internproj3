@@ -26,19 +26,19 @@ export default function StudentDashboard() {
   }
 
   if (status === "loading" || loading) {
-    return <div>Loading...</div>;
+    return <div style={styles.loading}>Loading...</div>;
   }
 
   if (status === "unauthenticated") {
-    return <div>Access Denied. Please login.</div>;
+    return <div style={styles.error}>Access Denied. Please login.</div>;
   }
 
   if (session?.user?.role !== "STUDENT") {
-    return <div>Unauthorized. Only students can access this page.</div>;
+    return <div style={styles.error}>Unauthorized.</div>;
   }
 
   if (!studentData) {
-    return <div>Failed to load student data.</div>;
+    return <div style={styles.error}>Failed to load data.</div>;
   }
 
   const { student } = studentData;
@@ -50,89 +50,149 @@ export default function StudentDashboard() {
     student.profile.mName;
 
   return (
-    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-      <h1>Student Dashboard</h1>
-      <p>Welcome, {session?.user?.email}</p>
-
-      <button
-        onClick={() => signOut({ callbackUrl: "/login" })}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "red",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginBottom: "20px",
-        }}
-      >
-        Sign Out
-      </button>
-
-      <hr />
-
-      <div
-        style={{
-          backgroundColor: "#f5f5f5",
-          padding: "20px",
-          borderRadius: "10px",
-          marginTop: "20px",
-        }}
-      >
-        <h2>Basic Information</h2>
-        <div style={{ marginBottom: "10px" }}>
-          <strong>Roll Number:</strong> {student.rollNo}
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <div>
+          <h1 style={styles.title}>Student Dashboard</h1>
+          <p style={styles.subtitle}>{session?.user?.email}</p>
         </div>
-        <div style={{ marginBottom: "10px" }}>
-          <strong>Email:</strong> {student.user.email}
+        <button
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          style={styles.signOutBtn}
+        >
+          Sign Out
+        </button>
+      </div>
+
+      <div style={styles.card}>
+        <h2 style={styles.cardTitle}>Basic Information</h2>
+        <div style={styles.infoRow}>
+          <span style={styles.label}>Roll Number:</span>
+          <span>{student.rollNo}</span>
         </div>
-        <div style={{ marginBottom: "10px" }}>
-          <strong>Teacher:</strong> {student.teacher.name} (
-          {student.teacher.user.email})
+        <div style={styles.infoRow}>
+          <span style={styles.label}>Name:</span>
+          <span>{student.name}</span>
+        </div>
+        <div style={styles.infoRow}>
+          <span style={styles.label}>Email:</span>
+          <span>{student.user.email}</span>
+        </div>
+        <div style={styles.infoRow}>
+          <span style={styles.label}>Teacher:</span>
+          <span>{student.teacher.name}</span>
         </div>
       </div>
 
       <div
         style={{
-          backgroundColor: profileComplete ? "#e8f5e9" : "#fff3e0",
-          padding: "20px",
-          borderRadius: "10px",
-          marginTop: "20px",
+          ...styles.card,
+          backgroundColor: profileComplete ? "#f0f9ff" : "#fff3cd",
+          borderColor: profileComplete ? "#0ea5e9" : "#ffc107",
         }}
       >
-        <h2>Profile Information</h2>
+        <h2 style={styles.cardTitle}>Profile Information</h2>
 
         {!profileComplete ? (
-          <p style={{ color: "#ff9800", fontWeight: "bold" }}>
-            ⚠️ Your profile is incomplete. Please wait for your teacher to fill
-            in your details.
+          <p style={styles.warningText}>
+            ⚠️ Your profile is incomplete. Please wait for your teacher to
+            complete it.
           </p>
         ) : (
           <>
-            <div style={{ marginBottom: "10px" }}>
-              <strong>Full Name:</strong> {student.profile.name}
+            <div style={styles.infoRow}>
+              <span style={styles.label}>Full Name:</span>
+              <span>{student.profile.name}</span>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-              <strong>Address:</strong> {student.profile.address}
+            <div style={styles.infoRow}>
+              <span style={styles.label}>Address:</span>
+              <span>{student.profile.address}</span>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-              <strong>Father's Name:</strong> {student.profile.fName}
+            <div style={styles.infoRow}>
+              <span style={styles.label}>Father's Name:</span>
+              <span>{student.profile.fName}</span>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-              <strong>Mother's Name:</strong> {student.profile.mName}
+            <div style={styles.infoRow}>
+              <span style={styles.label}>Mother's Name:</span>
+              <span>{student.profile.mName}</span>
             </div>
-            <p
-              style={{
-                color: "#4caf50",
-                fontWeight: "bold",
-                marginTop: "15px",
-              }}
-            >
-              ✓ Profile Complete
-            </p>
+            <p style={styles.successText}>✓ Profile Complete</p>
           </>
         )}
       </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    maxWidth: "900px",
+    margin: "0 auto",
+    padding: "30px 20px",
+  },
+  loading: {
+    textAlign: "center",
+    padding: "50px",
+    fontSize: "18px",
+  },
+  error: {
+    textAlign: "center",
+    padding: "50px",
+    fontSize: "18px",
+    color: "#dc3545",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "30px",
+    paddingBottom: "20px",
+    borderBottom: "2px solid #ddd",
+  },
+  title: {
+    margin: "0 0 5px 0",
+    fontSize: "28px",
+  },
+  subtitle: {
+    margin: 0,
+    color: "#666",
+    fontSize: "14px",
+  },
+  signOutBtn: {
+    padding: "10px 20px",
+    backgroundColor: "#dc3545",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+  },
+  card: {
+    backgroundColor: "#f8f9fa",
+    padding: "25px",
+    borderRadius: "8px",
+    marginBottom: "20px",
+    border: "1px solid #dee2e6",
+  },
+  cardTitle: {
+    margin: "0 0 20px 0",
+    fontSize: "20px",
+    paddingBottom: "10px",
+    borderBottom: "1px solid #dee2e6",
+  },
+  infoRow: {
+    display: "flex",
+    padding: "10px 0",
+    borderBottom: "1px solid #e9ecef",
+  },
+  label: {
+    fontWeight: "600",
+    minWidth: "150px",
+    color: "#495057",
+  },
+  warningText: {
+    color: "#856404",
+    fontSize: "15px",
+    margin: 0,
+  },
+};

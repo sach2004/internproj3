@@ -18,7 +18,7 @@ export default function CreateTeacher() {
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/teacher/create", {
+      await axios.post("/api/teacher/create", {
         email,
         password,
         name,
@@ -38,80 +38,123 @@ export default function CreateTeacher() {
   }
 
   return (
-    <div
-      style={{ marginTop: "20px", padding: "20px", border: "1px solid #ccc" }}
-    >
-      <h2>Create Teacher</h2>
+    <div style={styles.container}>
+      <h2 style={styles.title}>Create Teacher</h2>
       <form onSubmit={onSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label>
-            Name
+        <div style={styles.row}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
+              style={styles.input}
+              placeholder="Enter teacher name"
             />
-          </label>
-        </div>
+          </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>
-            Employee ID
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Employee ID</label>
             <input
               type="text"
               value={empId}
               onChange={(e) => setEmpId(e.target.value)}
               required
-              style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
+              style={styles.input}
+              placeholder="Enter employee ID"
             />
-          </label>
+          </div>
         </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>
-            Email
+        <div style={styles.row}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
+              style={styles.input}
+              placeholder="Enter email"
             />
-          </label>
-        </div>
+          </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>
-            Password
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={{ marginLeft: "10px", padding: "5px", width: "300px" }}
+              style={styles.input}
+              placeholder="Enter password"
             />
-          </label>
+          </div>
         </div>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>{success}</p>}
+        {error && <p style={styles.error}>{error}</p>}
+        {success && <p style={styles.success}>{success}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: loading ? "#ccc" : "#007bff",
-            color: "white",
-            border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
-        >
+        <button type="submit" disabled={loading} style={styles.button}>
           {loading ? "Creating..." : "Create Teacher"}
         </button>
       </form>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    backgroundColor: "white",
+    padding: "25px",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+  },
+  title: {
+    margin: "0 0 20px 0",
+    fontSize: "20px",
+  },
+  row: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "15px",
+    marginBottom: "15px",
+  },
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  label: {
+    marginBottom: "6px",
+    fontSize: "14px",
+    fontWeight: "500",
+  },
+  input: {
+    padding: "10px",
+    fontSize: "14px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+  },
+  error: {
+    color: "#dc3545",
+    fontSize: "14px",
+    margin: "0 0 15px 0",
+  },
+  success: {
+    color: "#28a745",
+    fontSize: "14px",
+    margin: "0 0 15px 0",
+  },
+  button: {
+    width: "100%",
+    padding: "12px",
+    backgroundColor: "#007bff",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    fontSize: "15px",
+    fontWeight: "500",
+    cursor: "pointer",
+  },
+};
