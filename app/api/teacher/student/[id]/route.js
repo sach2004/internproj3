@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "../../../../../lib/prisma.js";
 import { authOptions } from "../../../auth/[...nextauth]/route";
 
-export async function GET(request, { params }) {
+export async function GET(request, context) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -15,9 +15,9 @@ export async function GET(request, { params }) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
+    const params = await context.params;
     const studentId = parseInt(params.id);
 
-    // Get teacher record
     const teacher = await prisma.teacher.findUnique({
       where: { userId: session.user.id },
     });
@@ -29,7 +29,6 @@ export async function GET(request, { params }) {
       );
     }
 
-    // Get student and verify they belong to this teacher
     const student = await prisma.student.findUnique({
       where: { id: studentId },
       include: {
@@ -60,7 +59,7 @@ export async function GET(request, { params }) {
   } catch (error) {
     console.error("Error fetching student:", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: "Internal server error", error: error.message },
       { status: 500 },
     );
   }

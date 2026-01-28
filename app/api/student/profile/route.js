@@ -15,7 +15,6 @@ export async function GET(request) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    // Get student record with all related data
     const student = await prisma.student.findUnique({
       where: {
         userId: session.user.id,

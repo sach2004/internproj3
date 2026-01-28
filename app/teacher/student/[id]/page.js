@@ -93,266 +93,166 @@ export default function StudentProfileForm() {
   }
 
   if (status === "loading" || loading) {
-    return <div style={styles.loading}>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        Loading...
+      </div>
+    );
   }
 
   if (status === "unauthenticated") {
-    return <div style={styles.error}>Access Denied. Please login.</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-red-400">
+        Access Denied.
+      </div>
+    );
   }
 
   if (session?.user?.role !== "TEACHER") {
-    return <div style={styles.error}>Unauthorized.</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-red-400">
+        Unauthorized.
+      </div>
+    );
   }
 
   if (!student) {
-    return <div style={styles.error}>Student not found.</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-red-400">
+        Student not found.
+      </div>
+    );
   }
 
   return (
-    <div style={styles.container}>
-      <button onClick={() => router.push("/teacher")} style={styles.backBtn}>
-        ← Back
-      </button>
+    <div className="min-h-screen bg-gray-900">
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        <button
+          onClick={() => router.push("/teacher")}
+          className="mb-6 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 rounded-lg transition"
+        >
+          ← Back
+        </button>
 
-      <h1 style={styles.title}>Student Profile</h1>
-      <p style={styles.studentInfo}>
-        {student.name} • {student.rollNo}
-      </p>
+        <h1 className="text-3xl font-bold text-white mb-2">Student Profile</h1>
+        <p className="text-gray-400 mb-8">
+          {student.name} • {student.rollNo}
+        </p>
 
-      {/* Progress Bar */}
-      <div style={styles.progressContainer}>
-        <div style={styles.progressHeader}>
-          <span>Completion</span>
-          <span style={styles.progressPercent}>{progress}%</span>
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 mb-8">
+          <div className="flex justify-between mb-2 text-white">
+            <span>Completion</span>
+            <span className="font-bold">{progress}%</span>
+          </div>
+          <div className="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
+            <div
+              className={`h-full transition-all duration-300 ${
+                progress === 100 ? "bg-green-500" : "bg-blue-500"
+              }`}
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
-        <div style={styles.progressBar}>
-          <div
-            style={{
-              ...styles.progressFill,
-              width: `${progress}%`,
-              backgroundColor: progress === 100 ? "#28a745" : "#007bff",
-            }}
-          />
-        </div>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSave(true);
+          }}
+          className="space-y-6"
+        >
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Student Full Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter full name"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Address
+            </label>
+            <textarea
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              rows={3}
+              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              placeholder="Enter address"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Father's Name
+            </label>
+            <input
+              type="text"
+              name="fName"
+              value={formData.fName}
+              onChange={handleChange}
+              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter father's name"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Mother's Name
+            </label>
+            <input
+              type="text"
+              name="mName"
+              value={formData.mName}
+              onChange={handleChange}
+              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter mother's name"
+            />
+          </div>
+
+          {message && (
+            <p
+              className={`text-sm font-medium ${
+                message.includes("✓") ? "text-green-400" : "text-red-400"
+              }`}
+            >
+              {message}
+            </p>
+          )}
+
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => handleSave(false)}
+              disabled={saving}
+              className="flex-1 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg transition disabled:opacity-50"
+            >
+              {saving ? "Saving..." : "Save Progress"}
+            </button>
+
+            <button
+              type="submit"
+              disabled={saving || progress !== 100}
+              className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition disabled:opacity-50"
+            >
+              {saving ? "Submitting..." : "Submit Final"}
+            </button>
+          </div>
+
+          {progress !== 100 && (
+            <p className="text-xs text-gray-500 text-center">
+              * All fields required for final submission
+            </p>
+          )}
+        </form>
       </div>
-
-      {/* Form */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSave(true);
-        }}
-      >
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Student Full Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            style={styles.input}
-            placeholder="Enter full name"
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Address</label>
-          <textarea
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            rows={3}
-            style={styles.textarea}
-            placeholder="Enter address"
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Father's Name</label>
-          <input
-            type="text"
-            name="fName"
-            value={formData.fName}
-            onChange={handleChange}
-            style={styles.input}
-            placeholder="Enter father's name"
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Mother's Name</label>
-          <input
-            type="text"
-            name="mName"
-            value={formData.mName}
-            onChange={handleChange}
-            style={styles.input}
-            placeholder="Enter mother's name"
-          />
-        </div>
-
-        {message && (
-          <p
-            style={{
-              ...styles.message,
-              color: message.includes("✓") ? "#28a745" : "#dc3545",
-            }}
-          >
-            {message}
-          </p>
-        )}
-
-        <div style={styles.buttonGroup}>
-          <button
-            type="button"
-            onClick={() => handleSave(false)}
-            disabled={saving}
-            style={styles.saveBtn}
-          >
-            {saving ? "Saving..." : "Save Progress"}
-          </button>
-
-          <button
-            type="submit"
-            disabled={saving || progress !== 100}
-            style={{
-              ...styles.submitBtn,
-              opacity: saving || progress !== 100 ? 0.5 : 1,
-            }}
-          >
-            {saving ? "Submitting..." : "Submit Final"}
-          </button>
-        </div>
-
-        {progress !== 100 && (
-          <p style={styles.note}>* All fields required for final submission</p>
-        )}
-      </form>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    maxWidth: "600px",
-    margin: "0 auto",
-    padding: "30px 20px",
-  },
-  loading: {
-    textAlign: "center",
-    padding: "50px",
-    fontSize: "18px",
-  },
-  error: {
-    textAlign: "center",
-    padding: "50px",
-    fontSize: "18px",
-    color: "#dc3545",
-  },
-  backBtn: {
-    padding: "8px 16px",
-    marginBottom: "20px",
-    border: "1px solid #ddd",
-    backgroundColor: "#fff",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "14px",
-  },
-  title: {
-    margin: "0 0 5px 0",
-    fontSize: "26px",
-  },
-  studentInfo: {
-    margin: "0 0 30px 0",
-    color: "#666",
-    fontSize: "16px",
-  },
-  progressContainer: {
-    marginBottom: "30px",
-    padding: "15px",
-    backgroundColor: "#f8f9fa",
-    borderRadius: "6px",
-  },
-  progressHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "8px",
-    fontSize: "14px",
-  },
-  progressPercent: {
-    fontWeight: "bold",
-  },
-  progressBar: {
-    width: "100%",
-    height: "18px",
-    backgroundColor: "#e0e0e0",
-    borderRadius: "9px",
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    transition: "width 0.3s ease",
-  },
-  formGroup: {
-    marginBottom: "20px",
-  },
-  label: {
-    display: "block",
-    marginBottom: "6px",
-    fontWeight: "600",
-    fontSize: "14px",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    fontSize: "15px",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    boxSizing: "border-box",
-  },
-  textarea: {
-    width: "100%",
-    padding: "10px",
-    fontSize: "15px",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    boxSizing: "border-box",
-    resize: "vertical",
-  },
-  message: {
-    marginBottom: "15px",
-    fontSize: "14px",
-    fontWeight: "500",
-  },
-  buttonGroup: {
-    display: "flex",
-    gap: "10px",
-  },
-  saveBtn: {
-    flex: 1,
-    padding: "12px",
-    backgroundColor: "#ffc107",
-    color: "#000",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "15px",
-    fontWeight: "500",
-  },
-  submitBtn: {
-    flex: 1,
-    padding: "12px",
-    backgroundColor: "#28a745",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "15px",
-    fontWeight: "500",
-  },
-  note: {
-    marginTop: "10px",
-    fontSize: "12px",
-    color: "#666",
-  },
-};

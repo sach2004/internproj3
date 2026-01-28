@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "../../../../../../lib/prisma.js";
 import { authOptions } from "../../../../auth/[...nextauth]/route";
 
-export async function POST(request, { params }) {
+export async function POST(request, context) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -15,10 +15,11 @@ export async function POST(request, { params }) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
+    const params = await context.params;
     const studentId = parseInt(params.id);
+
     const { name, address, fName, mName, isFinal } = await request.json();
 
-    // Get teacher record
     const teacher = await prisma.teacher.findUnique({
       where: { userId: session.user.id },
     });
@@ -30,7 +31,6 @@ export async function POST(request, { params }) {
       );
     }
 
-    // Verify student belongs to this teacher
     const student = await prisma.student.findUnique({
       where: { id: studentId },
     });
@@ -49,7 +49,6 @@ export async function POST(request, { params }) {
       );
     }
 
-    // Check if all fields are filled for final submission
     if (isFinal) {
       if (!name || !address || !fName || !mName) {
         return NextResponse.json(
@@ -59,7 +58,6 @@ export async function POST(request, { params }) {
       }
     }
 
-    // Upsert student profile
     const profile = await prisma.studentProfile.upsert({
       where: { studentId },
       update: {
@@ -87,7 +85,7 @@ export async function POST(request, { params }) {
   } catch (error) {
     console.error("Error saving profile:", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: "Internal server error", error: error.message },
       { status: 500 },
     );
   }

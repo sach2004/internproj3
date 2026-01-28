@@ -54,68 +54,78 @@ export default function CreateStudent() {
   }
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Create Student</h2>
-      <form onSubmit={onSubmit}>
-        <div style={styles.row}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Name</label>
+    <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+      <h2 className="text-2xl font-semibold text-white mb-6">Create Student</h2>
+      <form onSubmit={onSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Name
+            </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              style={styles.input}
-              placeholder="Enter student name"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Student name"
             />
           </div>
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Roll Number</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Roll Number
+            </label>
             <input
               type="text"
               value={rollNo}
               onChange={(e) => setRollNo(e.target.value)}
               required
-              style={styles.input}
-              placeholder="Enter roll number"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Roll number"
             />
           </div>
         </div>
 
-        <div style={styles.row}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Email</label>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              style={styles.input}
-              placeholder="Enter email"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Email address"
             />
           </div>
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Password</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={styles.input}
-              placeholder="Enter password"
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Password"
             />
           </div>
         </div>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Assign Teacher</label>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Assign Teacher
+          </label>
           <select
             value={teacherId}
             onChange={(e) => setTeacherId(e.target.value)}
             required
-            style={styles.select}
+            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select a teacher</option>
             {teachers.map((teacher) => (
@@ -126,75 +136,17 @@ export default function CreateStudent() {
           </select>
         </div>
 
-        {error && <p style={styles.error}>{error}</p>}
-        {success && <p style={styles.success}>{success}</p>}
+        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {success && <p className="text-green-400 text-sm">{success}</p>}
 
-        <button type="submit" disabled={loading} style={styles.button}>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition disabled:opacity-50"
+        >
           {loading ? "Creating..." : "Create Student"}
         </button>
       </form>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    backgroundColor: "white",
-    padding: "25px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-  },
-  title: {
-    margin: "0 0 20px 0",
-    fontSize: "20px",
-  },
-  row: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "15px",
-    marginBottom: "15px",
-  },
-  formGroup: {
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: "15px",
-  },
-  label: {
-    marginBottom: "6px",
-    fontSize: "14px",
-    fontWeight: "500",
-  },
-  input: {
-    padding: "10px",
-    fontSize: "14px",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-  },
-  select: {
-    padding: "10px",
-    fontSize: "14px",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-  },
-  error: {
-    color: "#dc3545",
-    fontSize: "14px",
-    margin: "0 0 15px 0",
-  },
-  success: {
-    color: "#28a745",
-    fontSize: "14px",
-    margin: "0 0 15px 0",
-  },
-  button: {
-    width: "100%",
-    padding: "12px",
-    backgroundColor: "#28a745",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    fontSize: "15px",
-    fontWeight: "500",
-    cursor: "pointer",
-  },
-};

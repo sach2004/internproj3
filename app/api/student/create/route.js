@@ -6,10 +6,8 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function POST(request) {
   try {
-    // Get session to check authentication
     const session = await getServerSession(authOptions);
 
-    // Check if user is authenticated
     if (!session) {
       return NextResponse.json(
         { message: "Unauthorized - Please login" },
@@ -17,7 +15,6 @@ export async function POST(request) {
       );
     }
 
-    // Check if user is PRINCIPAL
     if (session.user.role !== "PRINCIPAL") {
       return NextResponse.json(
         { message: "Forbidden - Only principals can create students" },
@@ -25,10 +22,8 @@ export async function POST(request) {
       );
     }
 
-    // Parse request body
     const { email, password, name, rollNo, teacherId } = await request.json();
 
-    // Validate input
     if (!email || !password || !name || !rollNo || !teacherId) {
       return NextResponse.json(
         { message: "All fields are required" },
@@ -36,7 +31,6 @@ export async function POST(request) {
       );
     }
 
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -48,7 +42,6 @@ export async function POST(request) {
       );
     }
 
-    // Check if roll number already exists
     const existingStudent = await prisma.student.findUnique({
       where: { rollNo },
     });
@@ -60,7 +53,6 @@ export async function POST(request) {
       );
     }
 
-    // Check if teacher exists
     const teacher = await prisma.teacher.findUnique({
       where: { id: teacherId },
     });
@@ -72,12 +64,9 @@ export async function POST(request) {
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user and student in a transaction
     const result = await prisma.$transaction(async (tx) => {
-      // Create user with STUDENT role
       const user = await tx.user.create({
         data: {
           email: email,
@@ -86,7 +75,6 @@ export async function POST(request) {
         },
       });
 
-      // Create student linked to user
       const student = await tx.student.create({
         data: {
           name: name,
@@ -99,7 +87,6 @@ export async function POST(request) {
       return { user, student };
     });
 
-    // Return success response
     return NextResponse.json(
       {
         message: "Student created successfully",

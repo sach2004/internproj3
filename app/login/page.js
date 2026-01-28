@@ -40,39 +40,49 @@ export default function Login() {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>School Management System</h1>
-        <p style={styles.subtitle}>Sign in to continue</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+        <h1 className="text-3xl font-bold text-white text-center mb-2">
+          School Management
+        </h1>
+        <p className="text-gray-400 text-center mb-8">Sign in to continue</p>
 
-        <form onSubmit={onSubmit} style={styles.form}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Email</label>
+        <form onSubmit={onSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              style={styles.input}
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
             />
           </div>
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Password</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={styles.input}
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
             />
           </div>
 
-          {error && <p style={styles.error}>{error}</p>}
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
-          <button type="submit" disabled={loading} style={styles.button}>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
@@ -80,70 +90,3 @@ export default function Login() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f5f5f5",
-    padding: "20px",
-  },
-  card: {
-    backgroundColor: "white",
-    padding: "40px",
-    borderRadius: "8px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-    width: "100%",
-    maxWidth: "400px",
-  },
-  title: {
-    margin: "0 0 8px 0",
-    fontSize: "24px",
-    textAlign: "center",
-  },
-  subtitle: {
-    margin: "0 0 30px 0",
-    color: "#666",
-    textAlign: "center",
-    fontSize: "14px",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  formGroup: {
-    marginBottom: "20px",
-  },
-  label: {
-    display: "block",
-    marginBottom: "6px",
-    fontSize: "14px",
-    fontWeight: "500",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    fontSize: "15px",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    boxSizing: "border-box",
-  },
-  error: {
-    color: "#dc3545",
-    fontSize: "14px",
-    marginBottom: "15px",
-  },
-  button: {
-    width: "100%",
-    padding: "12px",
-    backgroundColor: "#007bff",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    fontSize: "16px",
-    fontWeight: "500",
-    cursor: "pointer",
-  },
-};

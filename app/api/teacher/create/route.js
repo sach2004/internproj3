@@ -31,7 +31,6 @@ export async function POST(request) {
       );
     }
 
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -43,7 +42,6 @@ export async function POST(request) {
       );
     }
 
-    // Check if empId already exists
     const existingTeacher = await prisma.teacher.findUnique({
       where: { empId },
     });
@@ -57,9 +55,7 @@ export async function POST(request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create both User and Teacher in a transaction
     const result = await prisma.$transaction(async (tx) => {
-      // Create user with TEACHER role
       const user = await tx.user.create({
         data: {
           email: email,
@@ -68,7 +64,6 @@ export async function POST(request) {
         },
       });
 
-      // Create teacher linked to user
       const teacher = await tx.teacher.create({
         data: {
           name: name,

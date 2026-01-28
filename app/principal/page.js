@@ -7,91 +7,52 @@ export default function Principal() {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
-    return <div style={styles.loading}>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        Loading...
+      </div>
+    );
   }
 
   if (status === "unauthenticated") {
-    return <div style={styles.error}>Access Denied. Please login.</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-red-400">
+        Access Denied. Please login.
+      </div>
+    );
   }
 
   if (session?.user?.role !== "PRINCIPAL") {
     return (
-      <div style={styles.error}>
-        Unauthorized. Only principals can access this page.
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-red-400">
+        Unauthorized.
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div>
-          <h1 style={styles.title}>Principal Dashboard</h1>
-          <p style={styles.subtitle}>{session?.user?.email}</p>
+    <div className="min-h-screen bg-gray-900">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-8 pb-6 border-b-2 border-gray-700">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-1">
+              Principal Dashboard
+            </h1>
+            <p className="text-gray-400">{session?.user?.email}</p>
+          </div>
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+          >
+            Sign Out
+          </button>
         </div>
-        <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          style={styles.signOutBtn}
-        >
-          Sign Out
-        </button>
-      </div>
 
-      <div style={styles.section}>
-        <CreateTeacher />
-      </div>
-
-      <div style={styles.section}>
-        <CreateStudent />
+        <div className="space-y-8">
+          <CreateTeacher />
+          <CreateStudent />
+        </div>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    padding: "30px 20px",
-  },
-  loading: {
-    textAlign: "center",
-    padding: "50px",
-    fontSize: "18px",
-  },
-  error: {
-    textAlign: "center",
-    padding: "50px",
-    fontSize: "18px",
-    color: "#dc3545",
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "30px",
-    paddingBottom: "20px",
-    borderBottom: "2px solid #ddd",
-  },
-  title: {
-    margin: "0 0 5px 0",
-    fontSize: "28px",
-  },
-  subtitle: {
-    margin: 0,
-    color: "#666",
-    fontSize: "14px",
-  },
-  signOutBtn: {
-    padding: "10px 20px",
-    backgroundColor: "#dc3545",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "14px",
-  },
-  section: {
-    marginBottom: "30px",
-  },
-};

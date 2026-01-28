@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js" // Change this line
+  provider = "prisma-client-js"
   output   = "../app/generated/prisma"
 }
 
@@ -7,7 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-// Keep rest of your models as is
 enum Role {
   STUDENT
   TEACHER

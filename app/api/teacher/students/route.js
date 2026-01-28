@@ -15,7 +15,6 @@ export async function GET(request) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    // Get teacher record
     const teacher = await prisma.teacher.findUnique({
       where: {
         userId: session.user.id,
@@ -29,7 +28,6 @@ export async function GET(request) {
       );
     }
 
-    // Get all students assigned to this teacher
     const students = await prisma.student.findMany({
       where: {
         teacherId: teacher.id,
