@@ -56,10 +56,7 @@ export default function StudentProfileForm() {
   function calculateProgress() {
     const fields = Object.values(formData);
     const filledFields = fields.filter((field) => field && field.trim() !== "");
-    const progressPercent = Math.round(
-      (filledFields.length / fields.length) * 100,
-    );
-    setProgress(progressPercent);
+    setProgress(Math.round((filledFields.length / fields.length) * 100));
   }
 
   function handleChange(e) {
@@ -79,83 +76,63 @@ export default function StudentProfileForm() {
         isFinal,
       });
 
-      setMessage(isFinal ? "Profile saved successfully!" : "Progress saved!");
+      setMessage(
+        isFinal ? "✓ Profile submitted successfully!" : "✓ Progress saved",
+      );
 
       if (isFinal) {
         setTimeout(() => router.push("/teacher"), 1500);
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || "Failed to save profile");
+      setMessage(
+        "✗ " + (error.response?.data?.message || "Failed to save profile"),
+      );
     } finally {
       setSaving(false);
     }
   }
 
   if (status === "loading" || loading) {
-    return <div>Loading...</div>;
+    return <div style={styles.loading}>Loading...</div>;
   }
 
   if (status === "unauthenticated") {
-    return <div>Access Denied. Please login.</div>;
+    return <div style={styles.error}>Access Denied. Please login.</div>;
   }
 
   if (session?.user?.role !== "TEACHER") {
-    return <div>Unauthorized. Only teachers can access this page.</div>;
+    return <div style={styles.error}>Unauthorized.</div>;
   }
 
   if (!student) {
-    return <div>Student not found.</div>;
+    return <div style={styles.error}>Student not found.</div>;
   }
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
-      <button
-        onClick={() => router.push("/teacher")}
-        style={{
-          padding: "8px 16px",
-          marginBottom: "20px",
-          cursor: "pointer",
-        }}
-      >
-        ← Back to Dashboard
+    <div style={styles.container}>
+      <button onClick={() => router.push("/teacher")} style={styles.backBtn}>
+        ← Back
       </button>
 
-      <h1>Student Profile Form</h1>
-      <h2>
-        {student.name} ({student.rollNo})
-      </h2>
+      <h1 style={styles.title}>Student Profile</h1>
+      <p style={styles.studentInfo}>
+        {student.name} • {student.rollNo}
+      </p>
 
       {/* Progress Bar */}
-      <div style={{ marginBottom: "30px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "5px",
-          }}
-        >
-          <span>Profile Completion</span>
-          <span>
-            <strong>{progress}%</strong>
-          </span>
+      <div style={styles.progressContainer}>
+        <div style={styles.progressHeader}>
+          <span>Completion</span>
+          <span style={styles.progressPercent}>{progress}%</span>
         </div>
-        <div
-          style={{
-            width: "100%",
-            height: "20px",
-            backgroundColor: "#e0e0e0",
-            borderRadius: "10px",
-            overflow: "hidden",
-          }}
-        >
+        <div style={styles.progressBar}>
           <div
             style={{
+              ...styles.progressFill,
               width: `${progress}%`,
-              height: "100%",
-              backgroundColor: progress === 100 ? "#4caf50" : "#2196f3",
-              transition: "width 0.3s ease",
+              backgroundColor: progress === 100 ? "#28a745" : "#007bff",
             }}
-          ></div>
+          />
         </div>
       </div>
 
@@ -166,82 +143,50 @@ export default function StudentProfileForm() {
           handleSave(true);
         }}
       >
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-            }}
-          >
-            Student Full Name
-          </label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Student Full Name</label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            style={{ width: "100%", padding: "8px", fontSize: "16px" }}
-            placeholder="Enter student's full name"
+            style={styles.input}
+            placeholder="Enter full name"
           />
         </div>
 
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-            }}
-          >
-            Address
-          </label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Address</label>
           <textarea
             name="address"
             value={formData.address}
             onChange={handleChange}
             rows={3}
-            style={{ width: "100%", padding: "8px", fontSize: "16px" }}
+            style={styles.textarea}
             placeholder="Enter address"
           />
         </div>
 
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-            }}
-          >
-            Father's Name
-          </label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Father's Name</label>
           <input
             type="text"
             name="fName"
             value={formData.fName}
             onChange={handleChange}
-            style={{ width: "100%", padding: "8px", fontSize: "16px" }}
+            style={styles.input}
             placeholder="Enter father's name"
           />
         </div>
 
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-            }}
-          >
-            Mother's Name
-          </label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Mother's Name</label>
           <input
             type="text"
             name="mName"
             value={formData.mName}
             onChange={handleChange}
-            style={{ width: "100%", padding: "8px", fontSize: "16px" }}
+            style={styles.input}
             placeholder="Enter mother's name"
           />
         </div>
@@ -249,32 +194,20 @@ export default function StudentProfileForm() {
         {message && (
           <p
             style={{
-              color:
-                message.includes("success") || message.includes("saved")
-                  ? "green"
-                  : "red",
-              marginBottom: "15px",
+              ...styles.message,
+              color: message.includes("✓") ? "#28a745" : "#dc3545",
             }}
           >
             {message}
           </p>
         )}
 
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div style={styles.buttonGroup}>
           <button
             type="button"
             onClick={() => handleSave(false)}
             disabled={saving}
-            style={{
-              flex: 1,
-              padding: "12px",
-              backgroundColor: saving ? "#ccc" : "#ff9800",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: saving ? "not-allowed" : "pointer",
-              fontSize: "16px",
-            }}
+            style={styles.saveBtn}
           >
             {saving ? "Saving..." : "Save Progress"}
           </button>
@@ -283,25 +216,143 @@ export default function StudentProfileForm() {
             type="submit"
             disabled={saving || progress !== 100}
             style={{
-              flex: 1,
-              padding: "12px",
-              backgroundColor: saving || progress !== 100 ? "#ccc" : "#4caf50",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: saving || progress !== 100 ? "not-allowed" : "pointer",
-              fontSize: "16px",
+              ...styles.submitBtn,
+              opacity: saving || progress !== 100 ? 0.5 : 1,
             }}
           >
             {saving ? "Submitting..." : "Submit Final"}
           </button>
         </div>
+
         {progress !== 100 && (
-          <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>
-            *All fields must be filled to submit final
-          </p>
+          <p style={styles.note}>* All fields required for final submission</p>
         )}
       </form>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    maxWidth: "600px",
+    margin: "0 auto",
+    padding: "30px 20px",
+  },
+  loading: {
+    textAlign: "center",
+    padding: "50px",
+    fontSize: "18px",
+  },
+  error: {
+    textAlign: "center",
+    padding: "50px",
+    fontSize: "18px",
+    color: "#dc3545",
+  },
+  backBtn: {
+    padding: "8px 16px",
+    marginBottom: "20px",
+    border: "1px solid #ddd",
+    backgroundColor: "#fff",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+  },
+  title: {
+    margin: "0 0 5px 0",
+    fontSize: "26px",
+  },
+  studentInfo: {
+    margin: "0 0 30px 0",
+    color: "#666",
+    fontSize: "16px",
+  },
+  progressContainer: {
+    marginBottom: "30px",
+    padding: "15px",
+    backgroundColor: "#f8f9fa",
+    borderRadius: "6px",
+  },
+  progressHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: "8px",
+    fontSize: "14px",
+  },
+  progressPercent: {
+    fontWeight: "bold",
+  },
+  progressBar: {
+    width: "100%",
+    height: "18px",
+    backgroundColor: "#e0e0e0",
+    borderRadius: "9px",
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    transition: "width 0.3s ease",
+  },
+  formGroup: {
+    marginBottom: "20px",
+  },
+  label: {
+    display: "block",
+    marginBottom: "6px",
+    fontWeight: "600",
+    fontSize: "14px",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    fontSize: "15px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    boxSizing: "border-box",
+  },
+  textarea: {
+    width: "100%",
+    padding: "10px",
+    fontSize: "15px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    boxSizing: "border-box",
+    resize: "vertical",
+  },
+  message: {
+    marginBottom: "15px",
+    fontSize: "14px",
+    fontWeight: "500",
+  },
+  buttonGroup: {
+    display: "flex",
+    gap: "10px",
+  },
+  saveBtn: {
+    flex: 1,
+    padding: "12px",
+    backgroundColor: "#ffc107",
+    color: "#000",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: "500",
+  },
+  submitBtn: {
+    flex: 1,
+    padding: "12px",
+    backgroundColor: "#28a745",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: "500",
+  },
+  note: {
+    marginTop: "10px",
+    fontSize: "12px",
+    color: "#666",
+  },
+};
