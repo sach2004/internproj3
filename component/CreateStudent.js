@@ -16,7 +16,7 @@ export default function CreateStudent() {
   useEffect(() => {
     async function fetchTeachers() {
       try {
-        const response = await axios.get("/api/teachers/list");
+        const response = await axios.get("/api/teacher/list");
         setTeachers(response.data.teachers);
       } catch (error) {
         console.error("Failed to fetch teachers:", error);

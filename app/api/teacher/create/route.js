@@ -22,15 +22,16 @@ export async function POST(request) {
       );
     }
 
-    const { email, password } = await request.json();
+    const { email, password, name, empId } = await request.json();
 
-    if (!email || !password) {
+    if (!email || !password || !name || !empId) {
       return NextResponse.json(
-        { message: "Email and password are required" },
+        { message: "Email, password, name, and employee ID are required" },
         { status: 400 },
       );
     }
 
+    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -42,23 +43,51 @@ export async function POST(request) {
       );
     }
 
+    // Check if empId already exists
+    const existingTeacher = await prisma.teacher.findUnique({
+      where: { empId },
+    });
+
+    if (existingTeacher) {
+      return NextResponse.json(
+        { message: "Teacher with this employee ID already exists" },
+        { status: 409 },
+      );
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        email: email,
-        password: hashedPassword,
-        role: "TEACHER",
-      },
+    // Create both User and Teacher in a transaction
+    const result = await prisma.$transaction(async (tx) => {
+      // Create user with TEACHER role
+      const user = await tx.user.create({
+        data: {
+          email: email,
+          password: hashedPassword,
+          role: "TEACHER",
+        },
+      });
+
+      // Create teacher linked to user
+      const teacher = await tx.teacher.create({
+        data: {
+          name: name,
+          empId: empId,
+          userId: user.id,
+        },
+      });
+
+      return { user, teacher };
     });
 
     return NextResponse.json(
       {
         message: "Teacher created successfully",
-        user: {
-          id: user.id,
-          email: user.email,
-          role: user.role,
+        teacher: {
+          id: result.teacher.id,
+          name: result.teacher.name,
+          empId: result.teacher.empId,
+          email: result.user.email,
         },
       },
       { status: 201 },
