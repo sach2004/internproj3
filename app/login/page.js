@@ -23,7 +23,6 @@ export default function Login() {
     });
 
     if (result?.ok) {
-      // Fetch session to get role
       const response = await fetch("/api/auth/session");
       const session = await response.json();
 
